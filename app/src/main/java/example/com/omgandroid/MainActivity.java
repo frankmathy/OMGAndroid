@@ -24,6 +24,13 @@ import android.widget.ShareActionProvider;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 
@@ -39,6 +46,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Adap
     public static final String PREFS = "prefs";
     public static final String PREF_NAME = "name";
     SharedPreferences mSharedPreferences;
+    public static final String QUERY_URL = "http://openlibrary.org/search.json?q=";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,14 +133,36 @@ public class MainActivity extends Activity implements View.OnClickListener, Adap
 
     @Override
     public void onClick(View view) {
-        mainTextView.setText(mainEditText.getText().toString() + " is learning Android development!");
-        mNameList.add(mainEditText.getText().toString());
-        mArrayAdapter.notifyDataSetChanged();
-        setShareIntent();
+        queryBooks(mainEditText.getText().toString());
     }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         Log.d("omg android", position + ": " + mNameList.get(position));
+    }
+
+    private void queryBooks(String searchString) {
+        String urlString = "";
+        try {
+            urlString = URLEncoder.encode(searchString, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get(QUERY_URL + urlString, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_LONG).show();
+                Log.d("omg android", jsonObject.toString());
+            }
+
+            @Override
+            public void onFailure(int statusCode, Throwable throwable, JSONObject error) {
+                Toast.makeText(getApplicationContext(), "Error: " + statusCode + " " + throwable.getMessage(), Toast.LENGTH_LONG).show();
+                Log.e("omg android", statusCode + " " + throwable.getMessage());
+            }
+        });
     }
 }
