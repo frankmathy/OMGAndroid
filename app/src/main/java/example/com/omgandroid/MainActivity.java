@@ -45,7 +45,6 @@ public class MainActivity extends Activity implements View.OnClickListener, Adap
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mainTextView = (TextView) findViewById(R.id.main_textview);
-        mainTextView.setText("Set in Java!");
         mainButton = (Button) findViewById(R.id.main_button);
         mainButton.setOnClickListener(this);
         mainEditText = (EditText) findViewById(R.id.main_edittext);
@@ -59,7 +58,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Adap
     private void displayWelcome() {
         mSharedPreferences = getSharedPreferences(PREFS, MODE_PRIVATE);
         String name = mSharedPreferences.getString(PREF_NAME, "");
-        if(name.length() > 0) {
+        if (name.length() > 0) {
             Toast.makeText(this, "Welcome back, " + name + "!", Toast.LENGTH_LONG).show();
         } else {
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -95,7 +94,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Adap
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         MenuItem shareItem = menu.findItem(R.id.menu_item_share);
-        if(shareItem != null) {
+        if (shareItem != null) {
             mShareActionProvider = (ShareActionProvider) shareItem.getActionProvider();
         }
         setShareIntent();
@@ -103,7 +102,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Adap
     }
 
     private void setShareIntent() {
-        if(mShareActionProvider != null) {
+        if (mShareActionProvider != null) {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.setType("text/plain");
             shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Android Development");
